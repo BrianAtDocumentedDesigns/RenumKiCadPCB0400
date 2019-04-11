@@ -36,5 +36,8 @@
 #define ALIGNPCBTEXT    2       //Align this first module text with that
 
 #define PARAMETERFILENAME   "RenumParameters.txt"
+#define PARAMETERDIRECTORY  "\\RenumKiCadPCB\\"     //Only used in Windows
+
+#define DESIGNRESOLUTION 128            //Resolution of display this was designed for
 
 #endif /* RENUMLITERALS_H_ */

@@ -65,5 +65,6 @@ extern    AboutDialog   *G_AboutDialog;
 extern    TextFunctions *G_TextDialog;
 extern    ReadMeDialog* G_ReadMeDialog;
 
+wxSize  AdjustItemSize(int x, int y);
 
 #endif /* RENUMEXTERNALS_H_ */

@@ -45,14 +45,22 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-    G_RenumMenu = new RenumKicadPCB( NULL, wxID_ANY, wxT("RenumKiCadPCB V0.401"), wxDefaultPosition, wxSize(920,1000));
-    LoadParameterFile(  );
+    G_RenumMenu = new RenumKicadPCB( NULL, wxID_ANY, 
+            wxT("RenumKiCadPCB V0.401"), wxDefaultPosition, 
+                    AdjustItemSize(920,800));
+LoadParameterFile(  );
     G_RenumMenu->SetParameters();
     G_PCBInputFile.buffer.clear();              //Make sure nothing is there
     G_TmpPCBBuffer.clear();
     LoadPCBFile( G_PCBInputFile );
     G_RenumMenu->Show(true);
     return true;
+}
+
+int CheckExists(std::string& item)
+{
+struct stat iteminfo;
+    return( stat( item.c_str(), &iteminfo ));       //File not found
 }
 
 //
@@ -63,10 +71,21 @@ void    WriteParameterFile( void )
 std::string parameterstring;
 
 std::ofstream    WriteFile;
-        WriteFile.open ( PARAMETERFILENAME, std::ios::binary | std::ios::out | std::ios::trunc );          //Open the file
+std::string paramfilename = "";  
 
-        if( !WriteFile.is_open() ) {
-            ShowMessage("Can't create parameter file!" );
+#ifndef  __linux__
+        paramfilename = getenv("APPDATA");     //In Windows write to the appdata folder
+        paramfilename += PARAMETERDIRECTORY;
+        if (0 != CheckExists(paramfilename))
+            _mkdir(paramfilename.c_str());      //This will trap in the is_open() error below
+#endif
+        paramfilename += PARAMETERFILENAME;
+        WriteFile.open (paramfilename, std::ios::binary | std::ios::out | std::ios::trunc );          //Open the file
+
+        if( !WriteFile.is_open() ) 
+        {
+            paramfilename.insert(0, "Can't create parameter file ");
+            ShowError( paramfilename.c_str(), 0 );
             return;
         }
 
@@ -95,7 +114,14 @@ void    LoadParameterFile(  )
 std::string  paramline, buffer, parameter;
 int     i, paramvalue;
 size_t  newline = 0, delim;
-std::string  paramfilename = PARAMETERFILENAME;
+
+std::string paramfilename = ""; 
+
+#ifndef  __linux__
+        paramfilename = getenv("APPDATA");     //In Windows write to the appdata folder
+        paramfilename += PARAMETERDIRECTORY;
+        paramfilename += PARAMETERFILENAME;
+#endif
 
         G_ProjectFileName.clear();            //Set all defaults
         G_ProjectPath.clear();
@@ -834,7 +860,8 @@ std::string     maxrefdestype;
             ShowWarning( "\n**** Error: Top Layer highest ref des  is %s. ****\n", maxrefdestype );
             ShowWarning( "**** Starting Back layer ref des number must be greater than %d ****\n", maxrefdes );
             maxrefdestype = "Change Bottom Ref Des Start to 0 or > " + std::to_string( maxrefdes ) + " and try again!";
-Abort       TmpAbort( NULL, wxID_ANY, maxrefdestype.c_str(), wxDefaultPosition, wxSize(450,100));      //Show Continue/Abort menu
+Abort       TmpAbort( NULL, wxID_ANY, maxrefdestype.c_str(), 
+                    wxDefaultPosition, AdjustItemSize(450,100));      //Show Continue/Abort menu
             TmpAbort.ShowModal();                //I should stop until clicked: Contine sets G_Errcount to 0
             return;
     }   //Make the change array
@@ -848,7 +875,8 @@ Abort       TmpAbort( NULL, wxID_ANY, maxrefdestype.c_str(), wxDefaultPosition, 
     {
         ShowError( "\n**** Warning: %d errors in files ****\n", G_Errcount );
 
-ContinueAbort  TmpContinueAbort( NULL, wxID_ANY, wxT(""), wxDefaultPosition, wxSize(400,300));      //Show Continue/Abort menu
+ContinueAbort  TmpContinueAbort( NULL, wxID_ANY, wxT(""), 
+                    wxDefaultPosition, AdjustItemSize(400,300));      //Show Continue/Abort menu
                TmpContinueAbort.ShowModal();                //I should stop until clicked: Contine sets G_Errcount to 0
     }
 

@@ -29,7 +29,6 @@ void RenumKicadPCB::ProjectFileSel( wxFileDirPickerEvent& event )
 void RenumKicadPCB::OnRenumberClick( wxCommandEvent& event )
 {
 (void) event;
-
     GetParameters();                                    //Set the program settings
     SetParameters();
     WriteParameterFile();                           //Write them to disk
@@ -51,7 +50,6 @@ void RenumKicadPCB::OnCancel( wxCommandEvent& event  )
 void RenumKicadPCB::OKDone( wxCommandEvent& event )
 {
     (void) event;
-
     GetParameters();
     WriteParameterFile(  );
     exit(0);
@@ -60,10 +58,11 @@ void RenumKicadPCB::OKDone( wxCommandEvent& event )
 void RenumKicadPCB::AccessText( wxCommandEvent& event )
 {
     (void) event;
-    G_TextDialog = new TextFunctions( NULL, wxID_ANY, wxT("PCB Text Field Manipulation"),
-                                                         wxDefaultPosition, wxSize(500,600), wxDEFAULT_DIALOG_STYLE );
+    G_TextDialog = new TextFunctions( NULL, wxID_ANY, 
+                            wxT("PCB Text Field Manipulation"),
+                                wxDefaultPosition, AdjustItemSize(500,600), 
+                                    wxDEFAULT_DIALOG_STYLE );
     G_TextDialog->Show( true );
-
 }
 
 
@@ -125,8 +124,10 @@ void    RenumKicadPCB::ShowError( const wxString &message )
 void    RenumKicadPCB::SayAbout( wxCommandEvent& event )
 {
     (void) event;
-    G_AboutDialog = new AboutDialog( NULL, wxID_ANY, wxT("About RenumKiCadPCB"),
-                                                         wxDefaultPosition, wxSize(400,600), wxDEFAULT_DIALOG_STYLE );
+    G_AboutDialog = new AboutDialog( NULL, wxID_ANY, 
+                        wxT("About RenumKiCadPCB"),
+                            wxDefaultPosition, AdjustItemSize(400,600), 
+                                  wxDEFAULT_DIALOG_STYLE );
     G_AboutDialog->ShowModal();
     delete( G_AboutDialog );
 }
@@ -134,8 +135,10 @@ void    RenumKicadPCB::SayAbout( wxCommandEvent& event )
 void    RenumKicadPCB::SayReadMe(wxCommandEvent& event)
 {
     (void)event;
-    G_ReadMeDialog = new ReadMeDialog(NULL, wxID_ANY, wxT("About RenumKiCadPCB"),
-        wxDefaultPosition, wxSize(1000, 600), wxDEFAULT_DIALOG_STYLE);
+    G_ReadMeDialog = new ReadMeDialog(NULL, wxID_ANY, 
+        wxT("About RenumKiCadPCB"),
+            wxDefaultPosition, AdjustItemSize(1000, 600), 
+                wxDEFAULT_DIALOG_STYLE);
     G_ReadMeDialog->ShowModal();
     delete(G_ReadMeDialog);
 }
@@ -383,3 +386,12 @@ void    ShowWarning( const char *message, std::string& arg1, std::string& arg2  
     G_RenumMenu->SetStyle( "BLACK");
 }
 //
+wxSize  AdjustItemSize(int x, int y)
+{
+    wxSize      DisplayResolution = wxGetDisplayPPI();
+    long int    tmpx = (x * DisplayResolution.x) / DESIGNRESOLUTION;
+    long int    tmpy = (y * DisplayResolution.x) / DESIGNRESOLUTION;
+    DisplayResolution.x = (int)tmpx;
+    DisplayResolution.y = (int)tmpy;
+    return(DisplayResolution);
+}

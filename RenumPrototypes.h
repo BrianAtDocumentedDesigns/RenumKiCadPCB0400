@@ -16,7 +16,7 @@
 
 #include    <math.h>
 
-#ifndef _MSC_VER
+#ifndef     _MSC_VER
 #include    <unistd.h>
 #else
 #include	<io.h>
@@ -103,5 +103,7 @@ void    ShowMessage( const char *message, std::string &arg1, std::string &arg2 )
 void    ShowWarning( const char *message, int arg1 );
 void    ShowWarning( const char *message, std::string& arg1  );
 void    ShowWarning( const char *message, std::string& arg1, std::string& arg2 );
+
+wxSize  AdjustItemSize(int x, int y);
 
 #endif /* RENUMPROTOTYPES_H_ */
