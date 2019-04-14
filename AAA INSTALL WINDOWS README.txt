@@ -1,0 +1,1 @@
+If you get a “DLL not found” message, run and install vc_redist.x86.exe from https://support.microsoft.com/en-ca/help/2977003/the-latest-supported-visualc-downloads, which has the distributable DLLs. 
